@@ -69,6 +69,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     actionItem: {
+        width: '95%',
         backgroundColor: '#fff',
         padding: 12,
         borderRadius: 8,
@@ -79,13 +80,13 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 3,
         flexDirection: 'row', // Change to column for vertical stacking
-        justifyContent: 'flex-start',
+        justifyContent: 'space-between',
         alignItems: 'flex-start',  // Stretch children across the available width
+        alignSelf:'center'
     },
     actionDetails: {
         flexShrink: 1,
         marginRight: 10, // Space between details and dates
-        maxWidth: '80%'
     },
     collapsedDescription: {
         maxHeight: 60, // Limit height when collapsed
