@@ -3,7 +3,7 @@ import { StyleSheet, FlatList, View, Text, ActivityIndicator, TouchableOpacity, 
 import * as db from './database';
 import DatePicker from "react-native-date-picker";
 import OptionButton from "./OptionButton";
-import MenuBar from "./MenuBar";
+import MenuBar, { ListItem } from "./MenuBar";
 import styles from "./styles";
 
 
@@ -14,29 +14,30 @@ export default function ActionsList({ navigation }) {
     const [date, setDate] = useState(new Date())
     const [open, setOpen] = useState(false);
 
-
+    const [selectedItem, setSelectedItem] = useState(null);
     const [isMenuVisible, setIsMenuVisible] = useState(false);
 
 
     useEffect(() => {
+        loadActions();
+    }, [date])
+
+    const loadActions = () => {
+        setLoading(true);
         db.getActions(date)
             .then(result => {
                 onActionsChange(result);
-                setLoading(false); // Set loading to false when data is fetched
+                setLoading(false);
             })
             .catch(error => {
                 console.error(error);
-                setLoading(false); // Set loading to false if there is an error
+                setLoading(false);
             });
-    }, [date])
-
-
+    };
 
 
     // Render each action
     const renderItem = ({ item }) => {
-
-
         return (
             <TouchableWithoutFeedback
                 onPress={() =>
@@ -77,7 +78,12 @@ export default function ActionsList({ navigation }) {
                         )}
                     </View>
 
-                    <OptionButton onPress={() => setIsMenuVisible(true)} />
+                    <OptionButton onPress={
+                        () => {
+                            setSelectedItem(item);
+                            setIsMenuVisible(true);
+                        }
+                    } />
 
 
                 </View>
@@ -135,8 +141,29 @@ export default function ActionsList({ navigation }) {
                         <View style={styles.overlay} />
                     </TouchableWithoutFeedback>
                     <MenuBar
-                        listItems={["Item 1", "Item 2", "Item 3"]}
-                        onClose={() => setIsMenuVisible(false)}
+                        listItems={[
+                            new ListItem(
+                                'Create new from',
+                                () => {
+                                    db.addAction(selectedItem.title, selectedItem.description, Date.now())
+                                    .then(res => loadActions() );
+                                    
+                                },
+                                () =>{ 
+                                    setIsMenuVisible(false);
+                                }
+                            ),
+                            new ListItem(
+                                'Delete',
+                                () => {
+                                    db.deleteAction(selectedItem.id)
+                                    .then(res => loadActions() );
+                                },
+                                () =>{ 
+                                    setIsMenuVisible(false);
+                                }
+                            ),
+                        ]}
                     />
                 </>
             )}

@@ -1,7 +1,13 @@
 import React from 'react'
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 
-export default function MenuBar({ listItems = [] , onClose =() =>{}}) {
+
+/**
+ * 
+ * @param {ListItem[]} listItems  
+ * @returns 
+ */
+export default function MenuBar({ listItems = [] }) {
     return (
         <View style={styles.bottomMenuContainer}>
             {listItems.map((item, index) => (
@@ -9,16 +15,25 @@ export default function MenuBar({ listItems = [] , onClose =() =>{}}) {
                     key={index}
                     style={styles.menuItem}
                     onPress={() => {
-                        console.log(`Pressed: ${item}`);
-                        onClose();
+                        item.onPress()
+                        item.onClose();
                     }}
                     activeOpacity={0.7}
                 >
-                    <Text style={styles.text}>{item}</Text>
+                    <Text style={styles.text}>{item.name}</Text>
                 </TouchableOpacity>
             ))}
         </View>
     );
+}
+
+
+export class ListItem{
+    constructor(name, onPress,onClose){
+        this.name = name;
+        this.onPress = onPress;
+        this.onClose = onClose;
+    }
 }
 
 
@@ -30,14 +45,14 @@ const styles = StyleSheet.create({
         borderBottomColor: '#eee',
     },
     bottomMenuContainer: {
-        width: '95%',
+        width: '100%',
         position: 'absolute',
         bottom: 0,
         left: 0,
         right: 0,
         backgroundColor: 'white',
-        borderTopLeftRadius: 10,
-        borderTopRightRadius: 10,
+        borderTopLeftRadius: 5,
+        borderTopRightRadius: 5,
         padding: 15,
         elevation: 5, // Shadow on Android
         shadowColor: '#000', // Shadow on iOS

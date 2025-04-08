@@ -132,12 +132,22 @@ export const updateAction = (id, title, description, createdAt, finishedAt) => {
 };
 
 export const deleteAction = (id) => {
-  db.transaction(tx => {
-    tx.executeSql(
-      `DELETE FROM actions WHERE id = ?`,
-      [id],
-      (_, result) => console.log('Action deleted:', result),
-      error => console.error('Delete error:', error)
-    );
+  return new Promise((resolve, reject) => {
+    db.transaction(tx => {
+      tx.executeSql(
+        `DELETE FROM actions WHERE id = ?`,
+        [id],
+        (_, result) => {
+          console.log('Action deleted:', result);
+          resolve(result); // Resolve the promise
+        },
+        (_, error) => {
+          console.error('Delete error:', error);
+          reject(error); // Reject the promise on error
+          return true; // Must return true to indicate the error was handled
+        }
+      );
+    });
   });
 };
+
