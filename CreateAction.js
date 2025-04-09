@@ -10,8 +10,8 @@ export default function CreateAction({navigation, route}){
         // RemoveActionTable().then(message => {
         //     console.log(message)
         // });
-        initDatabase();
-        console.log('database is initiated');
+        initDatabase().catch(err => console.error(err));
+        
 
     },[]);
 

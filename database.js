@@ -39,7 +39,7 @@ export const initDatabase = () => {
       reject(error);
     },
     () => {
-      console.log('Database initialized with tables and foreign key.');
+      console.log('Database initialized');
       resolve();
     });
   });
