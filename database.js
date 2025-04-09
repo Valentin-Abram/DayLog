@@ -8,18 +8,43 @@ const db = SQLite.openDatabase(
 
 // Initialize the database and create the table
 export const initDatabase = () => {
-  db.transaction(tx => {
-    tx.executeSql(
-      `CREATE TABLE IF NOT EXISTS actions (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT,
-        description TEXT,
-        createdAt INTEGER ,
-        finishedAt INTEGER 
-      );`
-    );
+  return new Promise((resolve, reject) => {
+    db.transaction(tx => {
+      // Enable foreign key constraints
+      tx.executeSql('PRAGMA foreign_keys = ON;');
+
+      // Create actionCategory table
+      tx.executeSql(
+        `CREATE TABLE IF NOT EXISTS actionCategory (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          title TEXT NOT NULL
+        );`
+      );
+
+      // Create actions table with foreign key to actionCategory
+      tx.executeSql(
+        `CREATE TABLE IF NOT EXISTS actions (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          title TEXT,
+          description TEXT,
+          createdAt INTEGER,
+          finishedAt INTEGER,
+          categoryId INTEGER,
+          FOREIGN KEY (categoryId) REFERENCES actionCategory(id) ON DELETE SET NULL
+        );`
+      );
+    },
+    error => {
+      console.log('Transaction error:', error);
+      reject(error);
+    },
+    () => {
+      console.log('Database initialized with tables and foreign key.');
+      resolve();
+    });
   });
 };
+
 
 
 export function RemoveActionTable() {
