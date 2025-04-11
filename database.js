@@ -59,6 +59,8 @@ export function RemoveActionTable() {
   });
 }
 
+
+
 // CRUD Operations
 export const addAction = (title, description, createdAt) => {
   return new Promise((resolve, reject) => {
@@ -116,7 +118,6 @@ export const getActions = (date = null) => {
 
 
 
-
 export const getAction = (id) =>{
   return new Promise ((resolve, reject) => {
     db.transaction(tx => {
@@ -131,7 +132,7 @@ export const getAction = (id) =>{
 };
 
 export const updateAction = (id, title, description, createdAt, finishedAt) => {
-  console.log(finishedAt);
+  
   return new Promise((resolve, reject) => {
     db.transaction(tx => {
       tx.executeSql(
@@ -176,3 +177,82 @@ export const deleteAction = (id) => {
   });
 };
 
+// CRUD for actionCategory
+
+export const getActionCategories = () =>{
+  return new Promise ((resolve, reject) =>{
+    db.transaction(tx => {
+      tx.executeSql(
+        `SELECT * FROM actionCategory ORDER BY title DESC`,
+        [],
+        (_, result) => resolve(result.rows.raw()),
+        error => reject(error)
+      );
+    })
+  });
+};
+
+
+export const addActionCategory = (title) =>{
+  return new Promise((resolve, reject) => {
+    db.transaction(tx => {
+      tx.executeSql(
+        `INSERT INTO actionCategory (title) VALUES (?)`,
+        [title],
+        (_,result) => {
+          resolve();
+        },
+        (_, error) => {
+          reject(error);
+          return false;
+        }
+      );
+    });
+  }); 
+}; 
+
+export const deleteActionCategory = (id) =>{
+  return new Promise((resolve, reject) => {
+    db.transaction(tx => {
+      tx.executeSql(
+        `DELETE FROM actionCategory WHERE id = ?`,
+        [id],
+        (_, result) => {
+          resolve();
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+}
+
+export const updateActionCategory = (id, title) =>{
+  return new Promise((resolve, reject) => {
+    db.transaction(tx => {
+      tx.executeSql(
+        `UPDATE actionCategory SET title = ? WHERE id = ?`,
+        [title, id],
+        (_, result) => {
+          if(result.rowsAffected > 0){
+            tx.executeSql(
+              `SELECT * FROM actionCategory WHERE id = ?`,
+              [id],
+              (_,result) =>{
+
+              },
+              (_, error) => {
+                
+              }
+            );
+          }
+          resolve();
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+}
