@@ -9,6 +9,7 @@ import ActionsList from './ActionsList';
 import { navigationRef } from './RootNavigation';
 import Header from './Header';
 import Footer from './Footer';
+import ActionCategory from './ActionCategory';
 
 const Stack = createNativeStackNavigator();
 
@@ -43,6 +44,13 @@ export default function App() {
           header: () => <Header headerDisplay='' />
         }}
          />
+         <Stack.Screen
+          name='ActionCategory'
+          component={ActionCategory}
+          options={{
+            header: () => <Header headerDisplay=''/>
+          }}
+          />
       </Stack.Navigator>
       <Footer/>
     </NavigationContainer>

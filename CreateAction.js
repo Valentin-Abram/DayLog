@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet,TouchableOpacity, TextInput } from "react-native";
 import styles from "./styles";
 import {initDatabase, addAction, RemoveActionTable} from "./database";
@@ -18,6 +18,7 @@ export default function CreateAction({navigation, route}){
 
     const [actionTitle, onChangeActionTitle] = React.useState('');
     const [actionDescription, onChangeActionDescription] = React.useState('');
+    const [actionCategory, setActionCategory] = useState(route.params?.category);
     
     return (
         <View style={styles.container}>
@@ -34,8 +35,17 @@ export default function CreateAction({navigation, route}){
                 multiline={true}
                 numberOfLines={4}
                 textAlignVertical="top"/>
+         <View style={{width: '80%'}}>
             <TouchableOpacity 
-                    style={styles.btn}
+                style={{padding: 10, borderBottomWidth:1, borderBlockColor: 'black', width: '100%' }}
+                onPress={() => navigation.navigate('ActionCategory')}
+                >
+                <Text>{actionCategory ? actionCategory.title : 'categorize'}</Text>
+            </TouchableOpacity>
+         </View>
+         
+            <TouchableOpacity 
+                    style={[styles.btn, {position: 'absolute', bottom: 20}]}
                     onPress={async () => {
                         const action = await addAction(actionTitle,actionDescription, Date.now());
                         console.log(action);
@@ -44,6 +54,7 @@ export default function CreateAction({navigation, route}){
                 }>
                 <Text>Start</Text>
             </TouchableOpacity>
+         
         </View>
     );
 }
